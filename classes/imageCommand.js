@@ -21,7 +21,10 @@ class ImageCommand extends Command {
     this.success = false;
 
     if (!this.permissions.has("ATTACH_FILES")) return this.getString("permissions.noAttachFiles");
-    if (!this.message.member.permissions.has("ATTACH_FILES")) return "You don't have the `Attach Files` permission!";
+    
+    const memberChannelPerms = this.channel?.permissionsOf?.(this.author.id)
+    if (memberChannelPerms && !memberChannelPerms.has("ATTACH_FILES")) 
+      return "You don't have the `Attach Files` permission!";
     
     
     const timestamp = this.type === "application" && this.interaction ? CommandInteraction.getCreatedAt(this.interaction.id) : this.message?.createdAt ?? new Date();
