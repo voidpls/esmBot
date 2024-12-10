@@ -128,6 +128,12 @@ export default async (client, message) => {
     const parsed = parseCommand(preArgs);
     const startTime = new Date();
     const commandClass = new cmd(client, { type: "classic", cmdName, message, args: parsed._, content: text.replace(command, "").trim(), specialArgs: (({ _, ...o }) => o)(parsed) }); // we also provide the message content as a parameter for cases where we need more accuracy
+
+    // dont run if user has no slash command perms
+    const memberChannelPerms = commandClass.channel?.permissionsOf?.(commandClass.author.id)
+    if (memberChannelPerms && !memberChannelPerms.has("USE_APPLICATION_COMMANDS")) 
+      return;
+
     const result = await commandClass.run();
     const endTime = new Date();
     if ((endTime.getTime() - startTime.getTime()) >= 180000) reference.allowedMentions.repliedUser = true;
