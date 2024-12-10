@@ -7,7 +7,10 @@ class ImageSearchCommand extends Command {
   async run() {
     this.success = false;
     if (!this.permissions.has("EMBED_LINKS")) return this.getString("permissions.noEmbedLinks");
-    if (!this.message.member.permissions.has("ATTACH_FILES")) return "You don't have the `Attach Files` permission!";
+    
+    const memberChannelPerms = this.channel?.permissionsOf?.(this.author.id)
+    if (memberChannelPerms && !memberChannelPerms.has("ATTACH_FILES")) 
+      return "You don't have the `Attach Files` permission!";
 
     const query = this.options.query ?? this.args.join(" ");
     if (!query || !query.trim()) return "You need to provide something to search for!";
